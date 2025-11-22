@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دورة الذكاء الاصطناعي الشاملة | أُبي سكر</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/css/brand-styles.css">
+    <style>
+        body { 
+            font-family: 'Cairo', 'Tajawal', sans-serif; 
+            overflow-x: hidden;
+        }
+        
+        .hand-drawn {
+            filter: url('#rough-paper');
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #0a1929 0%, #1a237e 25%, #3949ab 50%, #5e35b1 75%, #7b1fa2 100%);
+        }
+        
+        .course-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 3px solid;
+            border-image: linear-gradient(45deg, #00d4ff, #0091ff) 1;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .course-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #10b981, #f59e0b, #8b5cf6);
+        }
+        
+        .course-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+        }
+        
+        .lesson-number {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #0091ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .difficulty-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .beginner { background: linear-gradient(45deg, #10b981, #34d399); }
+        .intermediate { background: linear-gradient(45deg, #f59e0b, #fbbf24); }
+        .advanced { background: linear-gradient(45deg, #8b5cf6, #a78bfa); }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #00d4ff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: shimmer 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, #00d4ff, #0091ff);
+            border: none;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            box-shadow: 0 8px 25px rgba(0, 145, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 145, 255, 0.6);
+            background: linear-gradient(135deg, #0091ff, #00d4ff);
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .pricing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .pricing-card:hover {
+            border-color: #00d4ff;
+            transform: scale(1.05);
+        }
+        
+        .syria-special {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+        }
+        
+        .international {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+        }
+        
+        .neural-bg {
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .close {
+            color: #aaa;
+            float: left;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            left: 20px;
+        }
+        
+        .close:hover { color: black; }
+        
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body class="neural-bg">
+    <!-- SVG Filter for Hand-drawn Effect -->
+    <svg style="position: absolute; width: 0; height: 0;">
+        <filter id="rough-paper" x="0%" y="0%" width="100%" height="100%">
+            <feTurbulence baseFrequency="0.04" numOctaves="5" result="noise"/>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="1"/>
+        </filter>
+    </svg>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg min-h-screen flex items-center justify-center relative overflow-hidden">
+        <!-- Animated Background Elements -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-20 right-20 w-32 h-32 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full opacity-20 animate-pulse"></div>
+            <div class="absolute bottom-20 left-20 w-24 h-24 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full opacity-20 animate-pulse"></div>
+            <div class="absolute top-1/2 left-1/3 w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full opacity-20 animate-pulse"></div>
+        </div>
+
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="hero-title mb-6">دورة الذكاء الاصطناعي الشاملة</h1>
+                <p class="text-xl text-white/90 mb-4 font-medium">من الأساسيات إلى الوكلاء الذكيين - ٦ دروس متكاملة</p>
+                <p class="text-lg text-white/80 mb-8">تعلم استخدام أدوات الذكاء الاصطناعي بشكل احترافي مع أُبي سكر</p>
+                
+                <div class="flex flex-wrap justify-center gap-4 mb-8">
+                    <span class="badge">مجاني للمحتاج</span>
+                    <span class="badge">بالعربية الكاملة</span>
+                    <span class="badge">للمبتدئين</span>
+                    <span class="badge">١٥ ديسمبر ٢٠٢٥</span>
+                </div>
+                
+                <button onclick="scrollToPricing()" class="cta-button">ابدأ التعلم الآن</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Course Overview Video -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">شاهد نظرة عامة على الدورة</h2>
+                <div class="video-container">
+                    <iframe 
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Course Lessons Chart -->
+    <section class="py-20 bg-gradient-to-b from-gray-50 to-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-4">منهج الدورة</h2>
+            <p class="text-xl text-center text-gray-600 mb-12">٦ دروس متدرجة من الأساسيات إلى الاحترافية</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                <!-- Lesson 1 -->
+                <div class="course-card p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <span class="lesson-number">١</span>
+                        <span class="difficulty-badge beginner">مبتدئ</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">أساسيات الذكاء الاصطناعي</h3>
+                    <p class="text-gray-600 mb-4 leading-relaxed">فهم ما هو الذكاء الاصطناعي، كيف يعمل، والفرق بين AI وML وDeep Learning مع أمثلة من الحياة اليومية</p>
+                    <div class="flex items-center text-sm text-gray-500 mb-4">
+                        <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                        </svg>
+                        ٤٥ دقيقة
+                    </div>
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div>• تعريف الذكاء الاصطناعي</div>
+                        <div>• أنواع وتطبيقات الذكاء الاصطناعي</div>
+                        <div>• الخرافات والحقائق</div>
+                    </div>
+                </div>
+
+                <!-- Lesson 2 -->
+                <div class="course-card p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <span class="lesson-number">٢</span>
+                        <span class="difficulty-badge beginner">مبتدئ</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">التعامل مع أدوات الذكاء الاصطناعي</h3>
+                    <p class="text-gray-600 mb-4 leading-relaxed">تعلم استخدام ChatGPT وClaude وGemini مع أساسيات كتابة الأوامر الفعالة</p>
+                    <div class="flex items-center text-sm text-gray-500 mb-4">
+                        <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                        </svg>
+                        ٦٠ دقيقة
+                    </div>
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div>• مقارنة المنصات الرئيسية</div>
+                        <div>• كتابة الأوامر الفعالة</div>
+                        <div>• تطبيقات عملية</div>
+                    </div>
+                </div>
+
+                <!-- Lesson 3 -->
+                <div class="course-card p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <span class="lesson-number">٣</span>
+                        <span class="difficulty-badge intermediate">متوسط</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">الهندسة النصية المتقدمة</h3>
+                    <p class="text-gray-600 mb-4 leading-relaxed">إتقان فن صياغة الأوامر المعقدة والحصول على نتائج احترافية</p>
+                    <div class="flex items-center text-sm text-gray-500 mb-4">
+                        <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                        </svg>
+                        ٧٥ دقيقة
+                    </div>
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div>• تقنيات متقدمة في الهندسة النصية</div>
+                        <div>• هيكلة الأوامر الفعالة</div>
+                        <div>• التحسين التكراري</div>
+                    </div>
+                </div>
+
+                <!-- Lesson 4 -->
+                <div class="course-card p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <span class="lesson-number">٤</span>
+                        <span class="difficulty-badge intermediate">متوسط</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">الذكاء الاصطناعي للصور والوسائط</h3>
+                    <p class="text-gray-600 mb-4 leading-relaxed">إنشاء وتحرير الصور والأصوات والفيديوهات باستخدام الذكاء الاصطناعي</p>
+                    <div class="flex items-center text-sm text-gray-500 mb-4">
+                        <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                        </svg>
+                        ٩٠ دقيقة
+                    </div>
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div>• توليد الصور من النص</div>
+                        <div>• تحرير الصور بالذكاء الاصطناعي</div>
+                        <div>• الصوت والموسيقى والفيديو</div>
+                    </div>
+                </div>
+
+                <!-- Lesson 5 -->
+                <div class="course-card p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <span class="lesson-number">٥</span>
+                        <span class="difficulty-badge advanced">متقدم</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">الذكاء الاصطناعي في العمل والإنتاجية</h3>
+                    <p class="text-gray-600 mb-4 leading-relaxed">أتمتة المهام وزيادة الإنتاجية في العمل باستخدام أدوات الذكاء الاصطناعي</p>
+                    <div class="flex items-center text-sm text-gray-500 mb-4">
+                        <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                        </svg>
+                        ٨٥ دقيقة
+                    </div>
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div>• أتمتة المهام اليومية</div>
+                        <div>• أدوات الإنتاجية المدعومة بالـ AI</div>
+                        <div>• بناء سير عمل ذكي</div>
+                    </div>
+                </div>
+
+                <!-- Lesson 6 -->
+                <div class="course-card p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <span class="lesson-number">٦</span>
+                        <span class="difficulty-badge advanced">متقدم</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">الوكلاء الذكيون والمستقبل</h3>
+                    <p class="text-gray-600 mb-4 leading-relaxed">مقدمة للوكلاء الذكيين وكيفية بناء أنظمة ذكية مستقلة مع نظرة على مستقبل الذكاء الاصطناعي</p>
+                    <div class="flex items-center text-sm text-gray-500 mb-4">
+                        <svg class="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                        </svg>
+                        ١٠٠ دقيقة
+                    </div>
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div>• ما هي الوكلاء الذكيون؟</div>
+                        <div>• بناء وكيل بسيط</div>
+                        <div>• المستقبل والتحديات</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-20 gradient-bg">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center text-white mb-4">اختر الخطة المناسبة لك</h2>
+            <p class="text-xl text-center text-white/80 mb-12">نؤمن بأن التعليم حق للجميع</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Syria Pricing -->
+                <div class="pricing-card syria-special">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold mb-2">للأشقاء في سوريا</h3>
+                        <div class="text-5xl font-bold mb-2">$50</div>
+                        <p class="text-white/80">أو كود خصم مجاني للمحتاجين</p>
+                    </div>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-white ml-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            وصول كامل لجميع الدروس
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-white ml-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            دعم فني مباشر
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-white ml-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            مجموعة تليجرام خاصة
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-white ml-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            شهادة إتمام
+                        </li>
+                    </ul>
+                    <div class="space-y-3">
+                        <button onclick="openRegistration('syria-paid')" class="w-full bg-white text-green-600 font-bold py-3 rounded-lg hover:bg-gray-100 transition duration-300">
+                            سجل الآن - $50
+                        </button>
+                        <button onclick="openRegistration('syria-free')" class="w-full bg-transparent border-2 border-white text-white font-bold py-3 rounded-lg hover:bg-white hover:text-green-600 transition duration-300">
+                            أطلب كود خصم مجاني
+                        </button>
+                    </div>
+                    <p class="text-center text-sm text-white/70 mt-4">
+                        كود الخصم: ObaiLovesAi
+                    </p>
+                </div>
+
+                <!-- International Pricing -->
+                <div class="pricing-card international">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold mb-2">للمشاركين الدوليين</h3>
+                        <div class="text-5xl font-bold mb-2">$150</div>
+                        <p class="text-white/80">دفع آمن عبر Stripe</p>
+                    </div>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-white ml-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            وصول كامل لجميع الدروس
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-white ml-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            دعم فني متميز
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-white ml-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            مجموعة تليجرام VIP
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-white ml-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            شهادة إتمام معتمدة
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-5 h-5 text-white ml-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            جلسة استشارة مجانية (30 دقيقة)
+                        </li>
+                    </ul>
+                    <button onclick="openRegistration('international')" class="w-full bg-white text-blue-600 font-bold py-3 rounded-lg hover:bg-gray-100 transition duration-300">
+                        سجل الآن - $150
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Modal -->
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRegistration()">&times;</span>
+            <h2 class="text-3xl font-bold text-center mb-6" id="modalTitle">تسجيل في الدورة</h2>
+            
+            <form id="registrationForm">
+                <input type="hidden" id="registrationType" name="registrationType">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">الاسم الأول</label>
+                        <input type="text" name="firstName" required class="form-input">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">اسم العائلة</label>
+                        <input type="text" name="lastName" required class="form-input">
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">البريد الإلكتروني</label>
+                    <input type="email" name="email" required class="form-input">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">رقم الهاتف</label>
+                    <input type="tel" name="phone" required class="form-input">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">البلد</label>
+                    <select name="country" required class="form-input">
+                        <option value="">اختر البلد</option>
+                        <option value="syria">سوريا</option>
+                        <option value="lebanon">لبنان</option>
+                        <option value="jordan">الأردن</option>
+                        <option value="iraq">العراق</option>
+                        <option value="egypt">مصر</option>
+                        <option value="saudi">السعودية</option>
+                        <option value="uae">الإمارات</option>
+                        <option value="qatar">قطر</option>
+                        <option value="kuwait">الكويت</option>
+                        <option value="bahrain">البحرين</option>
+                        <option value="oman">عمان</option>
+                        <option value="palestine">فلسطين</option>
+                        <option value="morocco">المغرب</option>
+                        <option value="tunisia">تونس</option>
+                        <option value="algeria">الجزائر</option>
+                        <option value="libya">ليبيا</option>
+                        <option value="sudan">السودان</option>
+                        <option value="yemen">اليمن</option>
+                        <option value="other">دولة أخرى</option>
+                    </select>
+                </div>
+                
+                <!-- Discount Code Field (for Syria free users) -->
+                <div id="discountCodeField" class="mb-4" style="display: none;">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">كود الخصم</label>
+                    <input type="text" name="discountCode" class="form-input" placeholder="أدخل كود الخصم">
+                </div>
+                
+                <div class="mb-6">
+                    <label class="flex items-start">
+                        <input type="checkbox" name="terms" required class="mt-1 ml-2">
+                        <span class="text-sm text-gray-600">أوافق على <a href="#" class="text-blue-600 hover:underline">شروط الخدمة</a> و<a href="#" class="text-blue-600 hover:underline">سياسة الخصوصية</a></span>
+                    </label>
+                </div>
+                
+                <button type="submit" class="w-full cta-button" id="submitButton">
+                    إتمام التسجيل
+                </button>
+            </form>
+            
+            <!-- Stripe Payment Element -->
+            <div id="payment-element" style="display: none;" class="mt-6">
+                <!-- Stripe Elements will create form elements here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content text-center">
+            <span class="close" onclick="closeSuccess()">&times;</span>
+            <div class="text-green-500 text-6xl mb-4">✓</div>
+            <h2 class="text-3xl font-bold text-green-600 mb-4">تم التسجيل بنجاح!</h2>
+            <p class="text-gray-600 mb-6">ستصلك رسالة تأكيد على البريد الإلكتروني مع تفاصيل الوصول للدورة</p>
+            <button onclick="closeSuccess()" class="cta-button">ممتاز</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">عن أُبي سكر</h3>
+                    <p class="text-gray-300 mb-4">خبير في التكنولوجيا والذكاء الاصطناعي مع أكثر من 25 عام خبرة</p>
+                    <div class="flex space-x-4 space-x-reverse">
+                        <a href="https://linkedin.com/in/obaisukar" class="text-blue-400 hover:text-blue-300">LinkedIn</a>
+                        <a href="https://youtube.com/@karazah" class="text-red-400 hover:text-red-300">YouTube</a>
+                        <a href="https://obaisukar.com" class="text-green-400 hover:text-green-300">Website</a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">احصائيات</h3>
+                    <div class="space-y-2 text-gray-300">
+                        <div>🏆 جوائز عالمية متعددة</div>
+                        <div>👥 715,000+ مشترك</div>
+                        <div>📚 25+ سنة خبرة</div>
+                        <div>🎓 1000+ طالب تم تدريبهم</div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">الدعم</h3>
+                    <div class="space-y-2 text-gray-300">
+                        <div>📧 support@obaisukar.com</div>
+                        <div>💬 دعم فني ٢٤/٧</div>
+                        <div>📱 مجموعة تليجرام</div>
+                        <div>🎯 استشارات مخصصة</div>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 أُبي سكر. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Stripe configuration
+        const stripe = Stripe('pk_test_your_stripe_public_key_here'); // Replace with your actual Stripe public key
+        let elements, paymentElement;
+        
+        // Initialize Stripe Elements
+        function initializeStripe() {
+            elements = stripe.elements();
+            paymentElement = elements.create('payment');
+        }
+        
+        // Call initialize on load
+        document.addEventListener('DOMContentLoaded', initializeStripe);
+        
+        // Scroll to pricing function
+        function scrollToPricing() {
+            document.getElementById('pricing').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+        
+        // Registration modal functions
+        function openRegistration(type) {
+            const modal = document.getElementById('registrationModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const discountField = document.getElementById('discountCodeField');
+            const paymentElement = document.getElementById('payment-element');
+            const submitButton = document.getElementById('submitButton');
+            
+            document.getElementById('registrationType').value = type;
+            
+            switch(type) {
+                case 'syria-paid':
+                    modalTitle.textContent = 'تسجيل - سوريا ($50)';
+                    discountField.style.display = 'none';
+                    paymentElement.style.display = 'none';
+                    submitButton.textContent = 'ادفع $50 الآن';
+                    break;
+                case 'syria-free':
+                    modalTitle.textContent = 'طلب كود خصم مجاني';
+                    discountField.style.display = 'block';
+                    paymentElement.style.display = 'none';
+                    submitButton.textContent = 'أطلب كود الخصم';
+                    break;
+                case 'international':
+                    modalTitle.textContent = 'تسجيل دولي ($150)';
+                    discountField.style.display = 'none';
+                    paymentElement.style.display = 'block';
+                    if (paymentElement && elements) {
+                        paymentElement.mount('#payment-element');
+                    }
+                    submitButton.textContent = 'ادفع $150 الآن';
+                    break;
+            }
+            
+            modal.style.display = 'block';
+        }
+        
+        function closeRegistration() {
+            document.getElementById('registrationModal').style.display = 'none';
+        }
+        
+        function closeSuccess() {
+            document.getElementById('successModal').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const registrationModal = document.getElementById('registrationModal');
+            const successModal = document.getElementById('successModal');
+            if (event.target == registrationModal) {
+                closeRegistration();
+            }
+            if (event.target == successModal) {
+                closeSuccess();
+            }
+        }
+        
+        // Form submission handler
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const registrationType = formData.get('registrationType');
+            const userData = {
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                country: formData.get('country'),
+                registrationType: registrationType,
+                discountCode: formData.get('discountCode'),
+                timestamp: new Date().toISOString(),
+                ipAddress: await getUserIP()
+            };
+            
+            try {
+                if (registrationType === 'international') {
+                    // Handle Stripe payment
+                    await handleStripePayment(userData);
+                } else if (registrationType === 'syria-paid') {
+                    // Handle Syria paid registration (could use local payment gateway)
+                    await handleSyriaPaidRegistration(userData);
+                } else if (registrationType === 'syria-free') {
+                    // Handle free registration with discount code
+                    await handleFreeRegistration(userData);
+                }
+            } catch (error) {
+                alert('حدث خطأ في التسجيل. يرجى المحاولة مرة أخرى.');
+                console.error('Registration error:', error);
+            }
+        });
+        
+        // Get user IP for validation
+        async function getUserIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip;
+            } catch (error) {
+                console.error('Error getting IP:', error);
+                return 'unknown';
+            }
+        }
+        
+        // Handle Stripe payment
+        async function handleStripePayment(userData) {
+            const {error, paymentMethod} = await stripe.createPaymentMethod({
+                elements,
+                params: {
+                    billing_details: {
+                        name: `${userData.firstName} ${userData.lastName}`,
+                        email: userData.email,
+                    },
+                },
+            });
+            
+            if (error) {
+                console.error('Error:', error);
+                return;
+            }
+            
+            // Here you would typically send the payment method to your server
+            // For demo purposes, we'll simulate success
+            await simulatePaymentProcessing(userData, paymentMethod.id);
+        }
+        
+        // Handle Syria paid registration
+        async function handleSyriaPaidRegistration(userData) {
+            // Here you would integrate with a local Syrian payment processor
+            // For demo, we'll simulate the process
+            await simulateRegistrationProcessing(userData);
+        }
+        
+        // Handle free registration
+        async function handleFreeRegistration(userData) {
+            const discountCode = userData.discountCode;
+            
+            // Validate discount code
+            if (discountCode === 'ObaiLovesAi') {
+                await simulateRegistrationProcessing(userData);
+            } else {
+                alert('كود الخصم غير صحيح. يرجى التواصل معنا للحصول على كود صالح.');
+                return;
+            }
+        }
+        
+        // Simulate payment processing
+        async function simulatePaymentProcessing(userData, paymentMethodId) {
+            // Show loading state
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = true;
+            submitButton.textContent = 'جاري المعالجة...';
+            
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Store user data (in real implementation, send to your backend)
+            await storeUserData(userData);
+            
+            // Show success
+            showSuccess();
+            
+            submitButton.disabled = false;
+            submitButton.textContent = 'ادفع الآن';
+        }
+        
+        // Simulate registration processing
+        async function simulateRegistrationProcessing(userData) {
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = true;
+            submitButton.textContent = 'جاري التسجيل...';
+            
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Store user data
+            await storeUserData(userData);
+            
+            // Show success
+            showSuccess();
+            
+            submitButton.disabled = false;
+        }
+        
+        // Store user data (simulate CRM integration)
+        async function storeUserData(userData) {
+            // In a real implementation, you would:
+            // 1. Send data to your backend API
+            // 2. Store in database
+            // 3. Add to Zoho CRM via API
+            // 4. Send confirmation email
+            // 5. Generate unique course access code
+            
+            console.log('Storing user data:', userData);
+            
+            // For demo, store in localStorage
+            const existingUsers = JSON.parse(localStorage.getItem('courseUsers') || '[]');
+            userData.id = Date.now().toString();
+            existingUsers.push(userData);
+            localStorage.setItem('courseUsers', JSON.stringify(existingUsers));
+        }
+        
+        // Show success modal
+        function showSuccess() {
+            closeRegistration();
+            document.getElementById('successModal').style.display = 'block';
+        }
+        
+        // Generate unique code for Syria users
+        function generateUniqueCode() {
+            return 'SYRIA-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        }
+    </script>
+    
+    <!-- Include the main payment handler -->
+    <script src="assets/js/payment-handler.js"></script>
+</body>
+</html>

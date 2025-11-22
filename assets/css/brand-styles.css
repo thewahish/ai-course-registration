@@ -1,0 +1,248 @@
+/* Obai Sukar Brand Styles */
+:root {
+    /* Primary Brand Colors */
+    --obai-primary: #1a365d;          /* Deep blue from your brand */
+    --obai-secondary: #2d89ef;        /* Microsoft blue from your background */
+    --obai-accent: #00d4ff;           /* Cyan accent for highlights */
+    --obai-purple: #8b5cf6;           /* Purple for premium feel */
+    --obai-green: #10b981;            /* Success green */
+    --obai-orange: #f59e0b;           /* Warning/attention orange */
+    
+    /* Text Colors */
+    --obai-text-primary: #1a202c;     /* Dark text */
+    --obai-text-secondary: #4a5568;   /* Gray text */
+    --obai-text-light: #ffffff;       /* White text */
+    
+    /* Background Colors */
+    --obai-bg-primary: #ffffff;       /* White background */
+    --obai-bg-secondary: #f7fafc;     /* Light gray background */
+    --obai-bg-dark: #1a202c;          /* Dark background */
+    
+    /* Gradients */
+    --obai-gradient-primary: linear-gradient(135deg, #1a365d 0%, #2d89ef 50%, #00d4ff 100%);
+    --obai-gradient-secondary: linear-gradient(45deg, #8b5cf6, #00d4ff);
+    --obai-gradient-success: linear-gradient(45deg, #10b981, #34d399);
+    --obai-gradient-warning: linear-gradient(45deg, #f59e0b, #fbbf24);
+}
+
+/* Typography */
+.obai-font-primary {
+    font-family: 'Cairo', 'Tajawal', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.obai-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    background: var(--obai-gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 2px 2px 4px rgba(26, 54, 93, 0.3);
+}
+
+.obai-subtitle {
+    font-size: 1.25rem;
+    color: var(--obai-text-secondary);
+    font-weight: 500;
+}
+
+/* Buttons */
+.obai-btn {
+    background: var(--obai-gradient-primary);
+    color: var(--obai-text-light);
+    border: none;
+    padding: 14px 32px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    box-shadow: 0 8px 25px rgba(45, 137, 239, 0.4);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.obai-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(45, 137, 239, 0.6);
+    background: linear-gradient(135deg, #00d4ff 0%, #2d89ef 50%, #1a365d 100%);
+}
+
+.obai-btn-secondary {
+    background: transparent;
+    border: 2px solid var(--obai-primary);
+    color: var(--obai-primary);
+}
+
+.obai-btn-secondary:hover {
+    background: var(--obai-primary);
+    color: white;
+}
+
+/* Cards */
+.obai-card {
+    background: var(--obai-bg-primary);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(26, 54, 93, 0.1);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.obai-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--obai-gradient-primary);
+}
+
+.obai-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(26, 54, 93, 0.15);
+    border-color: var(--obai-accent);
+}
+
+/* Course specific styles */
+.course-lesson-card {
+    position: relative;
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.course-lesson-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--obai-gradient-primary);
+}
+
+.lesson-number-obai {
+    font-size: 3.5rem;
+    font-weight: 700;
+    background: var(--obai-gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+}
+
+.difficulty-beginner {
+    background: var(--obai-gradient-success);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.difficulty-intermediate {
+    background: var(--obai-gradient-warning);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.difficulty-advanced {
+    background: var(--obai-gradient-secondary);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Hero Section */
+.obai-hero {
+    background: var(--obai-gradient-primary);
+    position: relative;
+    overflow: hidden;
+}
+
+.obai-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* Pricing Cards */
+.pricing-syria {
+    background: var(--obai-gradient-success);
+    color: white;
+}
+
+.pricing-international {
+    background: var(--obai-gradient-primary);
+    color: white;
+}
+
+/* Forms */
+.obai-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: var(--obai-font-primary);
+}
+
+.obai-input:focus {
+    outline: none;
+    border-color: var(--obai-accent);
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+}
+
+/* Logo styles */
+.obai-logo {
+    height: 50px;
+    width: auto;
+}
+
+.obai-logo-white {
+    filter: brightness(0) invert(1);
+}
+
+/* Animations */
+@keyframes obai-shimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+.obai-shimmer {
+    background: linear-gradient(90deg, var(--obai-primary), var(--obai-accent), var(--obai-secondary), var(--obai-accent), var(--obai-primary));
+    background-size: 200% 100%;
+    animation: obai-shimmer 3s ease-in-out infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .obai-title {
+        font-size: 2.5rem;
+    }
+    
+    .lesson-number-obai {
+        font-size: 2.5rem;
+    }
+    
+    .obai-btn {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+}
