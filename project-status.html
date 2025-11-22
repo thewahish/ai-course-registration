@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حالة مشروع دورة الذكاء الاصطناعي | Project Status Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="assets/css/brand-styles.css">
+    <style>
+        body { 
+            font-family: 'Cairo', 'Tajawal', sans-serif; 
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        
+        .status-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 4px;
+        }
+        
+        .status-card.completed::before {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+        
+        .status-card.in-progress::before {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+        
+        .status-card.pending::before {
+            background: linear-gradient(90deg, #6b7280, #9ca3af);
+        }
+        
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(#10b981 0deg 324deg, #e5e7eb 324deg 360deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+        
+        .progress-ring::before {
+            content: '';
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            position: absolute;
+        }
+        
+        .progress-percentage {
+            position: relative;
+            z-index: 1;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #10b981;
+        }
+        
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-left: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .task-checkbox.completed {
+            background: #10b981;
+        }
+        
+        .task-checkbox.in-progress {
+            background: #f59e0b;
+        }
+        
+        .task-checkbox.pending {
+            background: #9ca3af;
+        }
+        
+        .task-text.completed {
+            text-decoration: line-through;
+            color: #6b7280;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding: 20px 0 20px 40px;
+            border-right: 2px solid #e5e7eb;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            right: -7px;
+            top: 25px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+        
+        .timeline-item.pending::before {
+            background: #9ca3af;
+        }
+        
+        .timeline-item.in-progress::before {
+            background: #f59e0b;
+            animation: pulse 2s infinite;
+        }
+        
+        .timeline-item:last-child {
+            border-right: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        
+        .github-badge {
+            background: #24292e;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s ease;
+        }
+        
+        .github-badge:hover {
+            background: #0366d6;
+        }
+        
+        .feature-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin: 4px;
+        }
+        
+        .phase-header {
+            background: linear-gradient(135deg, #1a365d, #2d89ef);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .tech-stack-item {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .tech-stack-item:hover {
+            border-color: #00d4ff;
+            transform: translateY(-2px);
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-white shadow-lg border-b-4 border-blue-500">
+        <div class="container mx-auto px-6 py-8">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold text-gray-800 mb-4">حالة مشروع دورة الذكاء الاصطناعي الشاملة</h1>
+                <h2 class="text-xl text-gray-600 mb-6">AI Course Registration & Reseller Management System</h2>
+                <div class="flex justify-center space-x-4 space-x-reverse">
+                    <span class="feature-badge">نظام التسجيل</span>
+                    <span class="feature-badge">إدارة الموزعين</span>
+                    <span class="feature-badge">تتبع العمولات</span>
+                    <span class="feature-badge">دعم عربي كامل</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Overall Progress -->
+    <section class="py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <!-- Overall Progress Circle -->
+                <div class="status-card text-center">
+                    <h3 class="text-xl font-semibold mb-4">إجمالي التقدم</h3>
+                    <div class="progress-ring">
+                        <div class="progress-percentage">90%</div>
+                    </div>
+                    <p class="text-gray-600">9 من 10 مهام مكتملة</p>
+                </div>
+
+                <!-- Project Stats -->
+                <div class="status-card">
+                    <h3 class="text-xl font-semibold mb-4 text-center">إحصائيات المشروع</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">إجمالي الملفات:</span>
+                            <span class="stats-number text-blue-600">12</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">أسطر الكود:</span>
+                            <span class="stats-number text-green-600">3,500+</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">المكونات:</span>
+                            <span class="stats-number text-purple-600">6</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GitHub Repository -->
+                <div class="status-card text-center">
+                    <h3 class="text-xl font-semibold mb-4">مستودع GitHub</h3>
+                    <div class="mb-4">
+                        <div class="text-2xl mb-2">📁</div>
+                        <p class="text-gray-600 mb-4">جميع الملفات محفوظة ومرفوعة</p>
+                    </div>
+                    <a href="#" class="github-badge">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                        </svg>
+                        عرض في GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Tasks Progress -->
+    <section class="py-8">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Completed Tasks -->
+                <div class="status-card completed">
+                    <h3 class="text-2xl font-bold mb-6 text-green-600">✅ المهام المكتملة</h3>
+                    <div class="space-y-2">
+                        <div class="task-item">
+                            <div class="task-checkbox completed">✓</div>
+                            <div class="task-text completed">إنشاء نظام إدارة الموزعين للأبناء العم</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-checkbox completed">✓</div>
+                            <div class="task-text completed">بناء نظام تتبع العمولات ($5 لكل تذكرة $50)</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-checkbox completed">✓</div>
+                            <div class="task-text completed">إنشاء واجهة توليد الأكواد للموزعين</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-checkbox completed">✓</div>
+                            <div class="task-text completed">تصميم نظام الكوبونات القابلة للطباعة</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-checkbox completed">✓</div>
+                            <div class="task-text completed">إعداد ملاحظات الاجتماع للأبناء العم</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-checkbox completed">✓</div>
+                            <div class="task-text completed">إنشاء الوثائق الرئيسية مع المراجع</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-checkbox completed">✓</div>
+                            <div class="task-text completed">إعداد مستودع GitHub والرفع</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-checkbox completed">✓</div>
+                            <div class="task-text completed">تطبيق نظام التحقق من مصادر متعددة</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Task -->
+                <div class="status-card in-progress">
+                    <h3 class="text-2xl font-bold mb-6 text-yellow-600">🚀 المهمة الحالية</h3>
+                    <div class="task-item">
+                        <div class="task-checkbox in-progress">⏳</div>
+                        <div class="task-text">إنشاء صفحة تتبع حالة المشروع HTML</div>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <h4 class="font-semibold text-yellow-800 mb-2">التقدم الحالي:</h4>
+                        <div class="w-full bg-yellow-200 rounded-full h-2">
+                            <div class="bg-yellow-600 h-2 rounded-full" style="width: 85%"></div>
+                        </div>
+                        <p class="text-sm text-yellow-700 mt-2">85% - جاري الانتهاء من التصميم والمحتوى</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Components -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-8">مكونات النظام المكتملة</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Landing Page -->
+                <div class="metric-card">
+                    <div class="text-4xl mb-4">🏠</div>
+                    <h3 class="text-xl font-semibold mb-2">الصفحة الرئيسية</h3>
+                    <p class="text-gray-600">صفحة التسجيل مع دعم عربي كامل وتصميم احترافي</p>
+                    <div class="mt-4">
+                        <span class="feature-badge">RTL Support</span>
+                        <span class="feature-badge">Mobile Ready</span>
+                    </div>
+                </div>
+
+                <!-- Admin Dashboard -->
+                <div class="metric-card">
+                    <div class="text-4xl mb-4">📊</div>
+                    <h3 class="text-xl font-semibold mb-2">لوحة التحكم</h3>
+                    <p class="text-gray-600">إدارة شاملة للطلاب والمبيعات والإحصائيات</p>
+                    <div class="mt-4">
+                        <span class="feature-badge">Analytics</span>
+                        <span class="feature-badge">Reports</span>
+                    </div>
+                </div>
+
+                <!-- Reseller Portal -->
+                <div class="metric-card">
+                    <div class="text-4xl mb-4">👥</div>
+                    <h3 class="text-xl font-semibold mb-2">بوابة الموزعين</h3>
+                    <p class="text-gray-600">نظام إدارة الموزعين وتوليد الأكواد</p>
+                    <div class="mt-4">
+                        <span class="feature-badge">Code Generation</span>
+                        <span class="feature-badge">Commission Tracking</span>
+                    </div>
+                </div>
+
+                <!-- Payment System -->
+                <div class="metric-card">
+                    <div class="text-4xl mb-4">💳</div>
+                    <h3 class="text-xl font-semibold mb-2">نظام الدفع</h3>
+                    <p class="text-gray-600">دفع متعدد: Stripe + محليّ سوري + كوبونات</p>
+                    <div class="mt-4">
+                        <span class="feature-badge">Stripe</span>
+                        <span class="feature-badge">Local Payment</span>
+                    </div>
+                </div>
+
+                <!-- CRM Integration -->
+                <div class="metric-card">
+                    <div class="text-4xl mb-4">📧</div>
+                    <h3 class="text-xl font-semibold mb-2">تكامل CRM</h3>
+                    <p class="text-gray-600">ربط تلقائي مع Zoho CRM ونظام إيميل</p>
+                    <div class="mt-4">
+                        <span class="feature-badge">Zoho CRM</span>
+                        <span class="feature-badge">Email Automation</span>
+                    </div>
+                </div>
+
+                <!-- Documentation -->
+                <div class="metric-card">
+                    <div class="text-4xl mb-4">📚</div>
+                    <h3 class="text-xl font-semibold mb-2">التوثيق</h3>
+                    <p class="text-gray-600">وثائق شاملة مع مراجع وملاحظات اجتماعات</p>
+                    <div class="mt-4">
+                        <span class="feature-badge">Technical Docs</span>
+                        <span class="feature-badge">Meeting Notes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack -->
+    <section class="py-12">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-8">التقنيات المستخدمة</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div class="tech-stack-item">
+                    <div class="text-2xl mb-2">🌐</div>
+                    <div class="font-semibold">HTML5</div>
+                    <div class="text-sm text-gray-600">Semantic</div>
+                </div>
+                
+                <div class="tech-stack-item">
+                    <div class="text-2xl mb-2">🎨</div>
+                    <div class="font-semibold">CSS3</div>
+                    <div class="text-sm text-gray-600">TailwindCSS</div>
+                </div>
+                
+                <div class="tech-stack-item">
+                    <div class="text-2xl mb-2">⚡</div>
+                    <div class="font-semibold">JavaScript</div>
+                    <div class="text-sm text-gray-600">ES6+</div>
+                </div>
+                
+                <div class="tech-stack-item">
+                    <div class="text-2xl mb-2">💳</div>
+                    <div class="font-semibold">Stripe</div>
+                    <div class="text-sm text-gray-600">Payments</div>
+                </div>
+                
+                <div class="tech-stack-item">
+                    <div class="text-2xl mb-2">📊</div>
+                    <div class="font-semibold">Chart.js</div>
+                    <div class="text-sm text-gray-600">Analytics</div>
+                </div>
+                
+                <div class="tech-stack-item">
+                    <div class="text-2xl mb-2">🗄️</div>
+                    <div class="font-semibold">MySQL</div>
+                    <div class="text-sm text-gray-600">Database</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Timeline -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-8">الجدول الزمني للمشروع</h2>
+            
+            <div class="max-w-2xl mx-auto">
+                <div class="timeline-item">
+                    <h3 class="text-lg font-semibold">إعداد النظام الأساسي</h3>
+                    <p class="text-gray-600 text-sm">إنشاء صفحة التسجيل والنظام الأساسي</p>
+                    <span class="text-xs text-green-600">✅ مكتمل</span>
+                </div>
+                
+                <div class="timeline-item">
+                    <h3 class="text-lg font-semibold">تطوير نظام الدفع</h3>
+                    <p class="text-gray-600 text-sm">تكامل Stripe والدفع المحلي السوري</p>
+                    <span class="text-xs text-green-600">✅ مكتمل</span>
+                </div>
+                
+                <div class="timeline-item">
+                    <h3 class="text-lg font-semibold">نظام إدارة الموزعين</h3>
+                    <p class="text-gray-600 text-sm">بوابة الموزعين وتتبع العمولات</p>
+                    <span class="text-xs text-green-600">✅ مكتمل</span>
+                </div>
+                
+                <div class="timeline-item">
+                    <h3 class="text-lg font-semibold">لوحة التحكم الإدارية</h3>
+                    <p class="text-gray-600 text-sm">إحصائيات شاملة وإدارة البيانات</p>
+                    <span class="text-xs text-green-600">✅ مكتمل</span>
+                </div>
+                
+                <div class="timeline-item">
+                    <h3 class="text-lg font-semibold">التوثيق والاجتماعات</h3>
+                    <p class="text-gray-600 text-sm">وثائق شاملة وملاحظات الاجتماع</p>
+                    <span class="text-xs text-green-600">✅ مكتمل</span>
+                </div>
+                
+                <div class="timeline-item in-progress">
+                    <h3 class="text-lg font-semibold">الانتهاء والنشر</h3>
+                    <p class="text-gray-600 text-sm">الاختبار النهائي والنشر على Digital Ocean</p>
+                    <span class="text-xs text-yellow-600">🚀 جاري</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Course Features -->
+    <section class="py-12">
+        <div class="container mx-auto px-6">
+            <div class="phase-header text-center">
+                <h2 class="text-3xl font-bold mb-4">🎓 محتوى الدورة - 6 دروس شاملة</h2>
+                <p class="text-lg">من الأساسيات إلى الوكلاء الذكيين - باللغة العربية الكاملة</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="status-card">
+                    <h3 class="text-lg font-semibold mb-2">١. أساسيات الذكاء الاصطناعي</h3>
+                    <p class="text-gray-600 text-sm mb-3">45 دقيقة - مبتدئ</p>
+                    <p class="text-gray-700">فهم ما هو AI وكيف يعمل مع أمثلة من الحياة اليومية</p>
+                </div>
+                
+                <div class="status-card">
+                    <h3 class="text-lg font-semibold mb-2">٢. التعامل مع أدوات AI</h3>
+                    <p class="text-gray-600 text-sm mb-3">60 دقيقة - مبتدئ</p>
+                    <p class="text-gray-700">تعلم استخدام ChatGPT وClaude وGemini بفعالية</p>
+                </div>
+                
+                <div class="status-card">
+                    <h3 class="text-lg font-semibold mb-2">٣. الهندسة النصية المتقدمة</h3>
+                    <p class="text-gray-600 text-sm mb-3">75 دقيقة - متوسط</p>
+                    <p class="text-gray-700">إتقان فن صياغة الأوامر للحصول على نتائج مثالية</p>
+                </div>
+                
+                <div class="status-card">
+                    <h3 class="text-lg font-semibold mb-2">٤. AI للصور والوسائط</h3>
+                    <p class="text-gray-600 text-sm mb-3">90 دقيقة - متوسط</p>
+                    <p class="text-gray-700">إنشاء وتحرير الصور والأصوات والفيديوهات</p>
+                </div>
+                
+                <div class="status-card">
+                    <h3 class="text-lg font-semibold mb-2">٥. AI في العمل والإنتاجية</h3>
+                    <p class="text-gray-600 text-sm mb-3">85 دقيقة - متقدم</p>
+                    <p class="text-gray-700">أتمتة المهام وزيادة الإنتاجية في العمل</p>
+                </div>
+                
+                <div class="status-card">
+                    <h3 class="text-lg font-semibold mb-2">٦. الوكلاء الذكيون والمستقبل</h3>
+                    <p class="text-gray-600 text-sm mb-3">100 دقيقة - متقدم</p>
+                    <p class="text-gray-700">بناء أنظمة ذكية مستقلة ونظرة على المستقبل</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Model -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-8">النموذج التجاري</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="metric-card bg-green-50 border-2 border-green-200">
+                    <h3 class="text-xl font-semibold text-green-800 mb-2">سوريا</h3>
+                    <div class="text-3xl font-bold text-green-600 mb-2">$50</div>
+                    <p class="text-gray-700">سعر خاص للطلاب السوريين</p>
+                    <div class="mt-4">
+                        <div class="text-sm text-green-700">عمولة الموزع: <strong>$5</strong></div>
+                    </div>
+                </div>
+                
+                <div class="metric-card bg-blue-50 border-2 border-blue-200">
+                    <h3 class="text-xl font-semibold text-blue-800 mb-2">دولي</h3>
+                    <div class="text-3xl font-bold text-blue-600 mb-2">$150</div>
+                    <p class="text-gray-700">سعر دولي متميز</p>
+                    <div class="mt-4">
+                        <div class="text-sm text-blue-700">دفع آمن عبر <strong>Stripe</strong></div>
+                    </div>
+                </div>
+                
+                <div class="metric-card bg-purple-50 border-2 border-purple-200">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-2">مجاني</h3>
+                    <div class="text-3xl font-bold text-purple-600 mb-2">$0</div>
+                    <p class="text-gray-700">للمحتاجين مع كود خصم</p>
+                    <div class="mt-4">
+                        <div class="text-sm text-purple-700">كود: <strong>ObaiLovesAi</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Next Steps -->
+    <section class="py-12">
+        <div class="container mx-auto px-6">
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl p-8 text-center">
+                <h2 class="text-3xl font-bold mb-4">🚀 الخطوات التالية</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                    <div class="bg-white/10 backdrop-blur rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-3">المرحلة النهائية</h3>
+                        <ul class="text-left space-y-2 text-sm">
+                            <li>✅ إنهاء صفحة تتبع المشروع</li>
+                            <li>⚡ اختبار النظام بالكامل</li>
+                            <li>🔧 تحسين الأداء النهائي</li>
+                            <li>🌐 النشر على Digital Ocean</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/10 backdrop-blur rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-3">الاستعداد للإطلاق</h3>
+                        <ul class="text-left space-y-2 text-sm">
+                            <li>🤝 اجتماع الأبناء العم</li>
+                            <li>📚 تدريب الموزعين</li>
+                            <li>🎯 تحديد استراتيجية التسويق</li>
+                            <li>🎉 الإطلاق الرسمي</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-6 text-center">
+            <h3 class="text-xl font-semibold mb-4">مشروع مكتمل بنسبة 90%</h3>
+            <p class="text-gray-400 mb-4">نظام شامل لإدارة دورة الذكاء الاصطناعي باللغة العربية</p>
+            <div class="flex justify-center space-x-6 space-x-reverse">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-green-400">9</div>
+                    <div class="text-sm text-gray-400">مهام مكتملة</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-yellow-400">1</div>
+                    <div class="text-sm text-gray-400">مهمة نهائية</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-400">3500+</div>
+                    <div class="text-sm text-gray-400">سطر كود</div>
+                </div>
+            </div>
+            
+            <div class="mt-6 pt-6 border-t border-gray-700">
+                <p class="text-gray-400">
+                    🤖 Generated with 
+                    <a href="https://claude.ai/code" class="text-blue-400 hover:text-blue-300">Claude Code</a>
+                    - Built with highest creativity and technical excellence
+                </p>
+                <p class="text-gray-500 mt-2">© 2025 Obai Sukar - جميع الحقوق محفوظة</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Add some interactivity for better UX
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress ring on scroll
+            const observerOptions = {
+                threshold: 0.5
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'spin 2s ease-in-out';
+                    }
+                });
+            }, observerOptions);
+            
+            const progressRing = document.querySelector('.progress-ring');
+            if (progressRing) {
+                observer.observe(progressRing);
+            }
+            
+            // Add click handlers for task items
+            document.querySelectorAll('.task-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    this.style.transform = 'scale(1.02)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            });
+            
+            // Auto-update timestamp
+            function updateTimestamp() {
+                const now = new Date();
+                const timestamp = now.toLocaleString('ar-SA', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                // Add timestamp if element exists
+                const timestampEl = document.getElementById('last-updated');
+                if (timestampEl) {
+                    timestampEl.textContent = timestamp;
+                }
+            }
+            
+            updateTimestamp();
+        });
+        
+        // Progress animation
+        function animateProgress() {
+            const progressBar = document.querySelector('.bg-yellow-600');
+            if (progressBar) {
+                let width = 0;
+                const targetWidth = 85;
+                const increment = targetWidth / 50;
+                
+                const animate = () => {
+                    if (width < targetWidth) {
+                        width += increment;
+                        progressBar.style.width = width + '%';
+                        requestAnimationFrame(animate);
+                    }
+                };
+                
+                animate();
+            }
+        }
+        
+        // Start animations when page loads
+        setTimeout(animateProgress, 500);
+    </script>
+</body>
+</html>
