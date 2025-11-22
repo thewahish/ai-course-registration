@@ -424,9 +424,9 @@
                 <!-- Syria Pricing -->
                 <div class="pricing-card syria-special">
                     <div class="text-center mb-6">
-                        <h3 class="text-2xl font-bold mb-2">للأشقاء في سوريا</h3>
+                        <h3 class="text-2xl font-bold mb-2">أهلنا في سوريا</h3>
                         <div class="text-5xl font-bold mb-2">$50</div>
-                        <p class="text-white/80">أو كود خصم مجاني للمحتاجين</p>
+                        <p class="text-white/80">تكلفة خاصة مع إمكانية الدعم للمحتاجين</p>
                     </div>
                     <ul class="space-y-3 mb-8">
                         <li class="flex items-center">
@@ -451,7 +451,7 @@
                             <svg class="w-5 h-5 text-white ml-3" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                             </svg>
-                            شهادة إتمام
+                            شهادة إتمام من أُبي سكر
                         </li>
                     </ul>
                     <div class="space-y-3">
@@ -459,12 +459,9 @@
                             سجل الآن - $50
                         </button>
                         <button onclick="openRegistration('syria-free')" class="w-full bg-transparent border-2 border-white text-white font-bold py-3 rounded-lg hover:bg-white hover:text-green-600 transition duration-300">
-                            أطلب كود خصم مجاني
+                            أطلب دعم مجاني
                         </button>
                     </div>
-                    <p class="text-center text-sm text-white/70 mt-4">
-                        كود الخصم: ObaiLovesAi
-                    </p>
                 </div>
 
                 <!-- International Pricing -->
@@ -497,7 +494,7 @@
                             <svg class="w-5 h-5 text-white ml-3" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                             </svg>
-                            شهادة إتمام معتمدة
+                            شهادة إتمام من أُبي سكر
                         </li>
                         <li class="flex items-center">
                             <svg class="w-5 h-5 text-white ml-3" fill="currentColor" viewBox="0 0 20 20">
@@ -572,8 +569,9 @@
                 
                 <!-- Discount Code Field (for Syria free users) -->
                 <div id="discountCodeField" class="mb-4" style="display: none;">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">كود الخصم</label>
-                    <input type="text" name="discountCode" class="form-input" placeholder="أدخل كود الخصم">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">كود الدعم الخاص</label>
+                    <input type="text" name="discountCode" class="form-input" placeholder="أدخل كود الدعم المُرسل إليك">
+                    <p class="text-xs text-gray-500 mt-1">سيتم إرسال كود الدعم عبر التواصل المباشر للحالات المؤهلة</p>
                 </div>
                 
                 <div class="mb-6">
@@ -683,10 +681,10 @@
                     submitButton.textContent = 'ادفع $50 الآن';
                     break;
                 case 'syria-free':
-                    modalTitle.textContent = 'طلب كود خصم مجاني';
+                    modalTitle.textContent = 'طلب دعم مجاني';
                     discountField.style.display = 'block';
                     paymentElement.style.display = 'none';
-                    submitButton.textContent = 'أطلب كود الخصم';
+                    submitButton.textContent = 'أطلب الدعم المجاني';
                     break;
                 case 'international':
                     modalTitle.textContent = 'تسجيل دولي ($150)';

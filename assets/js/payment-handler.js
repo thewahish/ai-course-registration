@@ -325,16 +325,28 @@ class CourseRegistrationHandler {
     
     // Validate discount code
     validateDiscountCode(code, ipAddress) {
-        const validCodes = ['ObaiLovesAi', 'SYRIA2025', 'AIDEMO'];
+        // Check if code format is valid (reseller codes or special support codes)
+        const isResellerCode = code.match(/^[A-Z]+-SYRIA-[A-Z0-9]+$/);
+        const isSpecialSupportCode = code === 'ObaiLovesAi'; // Only for direct communication
         
-        if (!validCodes.includes(code)) {
-            this.showError('كود الخصم غير صحيح. يرجى التواصل معنا للحصول على كود صالح.');
+        if (!isResellerCode && !isSpecialSupportCode) {
+            this.showError('كود غير صحيح. يرجى التأكد من الكود أو التواصل معنا.');
             return false;
         }
         
-        // Check if code was already used from this IP
-        if (this.ipValidation.has(ipAddress) && this.ipValidation.get(ipAddress).includes(code)) {
-            this.showError('تم استخدام هذا الكود من هذا الجهاز مسبقاً. كل كود يمكن استخدامه مرة واحدة فقط.');
+        // Check if code was already used globally (not just by IP)
+        const usedCodes = JSON.parse(localStorage.getItem('globalUsedCodes') || '[]');
+        if (usedCodes.includes(code)) {
+            this.showError('تم استخدام هذا الكود مسبقاً. كل كود يمكن استخدامه مرة واحدة فقط.');
+            return false;
+        }
+        
+        // Check if multiple codes used from same IP (anti-abuse)
+        const ipHistory = JSON.parse(localStorage.getItem('ipCodeHistory') || '{}');
+        const ipUsage = ipHistory[ipAddress] || [];
+        
+        if (ipUsage.length >= 1) { // Allow only 1 free code per IP
+            this.showError('تم استخدام كود دعم من هذا الجهاز مسبقاً. كل جهاز يحق له كود واحد فقط.');
             return false;
         }
         
@@ -343,17 +355,33 @@ class CourseRegistrationHandler {
     
     // Mark discount code as used
     markCodeAsUsed(code, ipAddress) {
-        this.usedCodes.add(code);
-        localStorage.setItem('usedDiscountCodes', JSON.stringify([...this.usedCodes]));
+        // Mark globally as used (prevents any reuse)
+        const globalUsedCodes = JSON.parse(localStorage.getItem('globalUsedCodes') || '[]');
+        globalUsedCodes.push(code);
+        localStorage.setItem('globalUsedCodes', JSON.stringify(globalUsedCodes));
         
-        if (!this.ipValidation.has(ipAddress)) {
-            this.ipValidation.set(ipAddress, []);
+        // Track IP usage for anti-abuse
+        const ipHistory = JSON.parse(localStorage.getItem('ipCodeHistory') || '{}');
+        if (!ipHistory[ipAddress]) {
+            ipHistory[ipAddress] = [];
         }
-        this.ipValidation.get(ipAddress).push(code);
+        ipHistory[ipAddress].push({
+            code: code,
+            usedAt: new Date().toISOString(),
+            userAgent: navigator.userAgent
+        });
+        localStorage.setItem('ipCodeHistory', JSON.stringify(ipHistory));
         
-        // Convert Map to array for storage
-        const ipValidationArray = [...this.ipValidation.entries()];
-        localStorage.setItem('ipValidation', JSON.stringify(ipValidationArray));
+        // Log the usage for admin tracking
+        const usageLog = JSON.parse(localStorage.getItem('codeUsageLog') || '[]');
+        usageLog.push({
+            code: code,
+            ipAddress: ipAddress,
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            success: true
+        });
+        localStorage.setItem('codeUsageLog', JSON.stringify(usageLog));
     }
     
     // Complete registration process
